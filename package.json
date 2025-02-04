@@ -1,0 +1,31 @@
+{
+  "name": "bible-viewer",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tdev": "tauri dev"
+  },
+  "dependencies": {
+    "@msgpack/msgpack": "^3.0.0-beta3",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-fs": "^2.2.0",
+    "@tauri-apps/plugin-opener": "^2",
+    "bible-passage-reference-parser": "^3.0.0",
+    "nuxt": "^3",
+    "papaparse": "^5.5.2",
+    "usfm-js": "^3.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@tauri-apps/cli": "^2",
+    "@types/papaparse": "^5.3.15",
+    "daisyui": "^5.0.0-beta.2",
+    "tailwindcss": "^4.0.0"
+  }
+}

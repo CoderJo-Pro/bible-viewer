@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@plugin "daisyui";
+@plugin "daisyui/theme" {
+  name: "dark";
+  --depth: 0;
+}
+
+@layer utilities {
+  .btn {
+    &:hover {
+      @apply active:scale-95 border-none translate-none;
+      transition: scale 0.1s ease-in-out;
+    }
+  }
+
+  .btn-ghost {
+    /* change "alpha - 0.8" to fit daisy design */
+    /* --btn-ghost-bg: oklch(from var(--color-base-content) l c h / calc(alpha - 0.8)); */
+    --btn-ghost-bg: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+
+    &:hover {
+      --btn-bg: color-mix(in oklab, var(--btn-color, var(--btn-ghost-bg)), black 7%);
+    }
+
+    &:active:not(.btn-active) {
+      --btn-bg: color-mix(in oklab, var(--btn-color, var(--btn-ghost-bg)), black 5%);
+      --btn-border: color-mix(in oklab, var(--btn-color, var(--btn-ghost-bg)), black 7%);
+    }
+  }
+}

@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+.passage {
+  @apply tracking-wide;
+
+  p {
+    @apply mb-4;
+
+    &::before {
+      content: "  ";
+    }
+  }
+  
+  h2 {
+    @apply mb-4 text-2xl select-none;
+  }
+
+  sup {
+    @apply select-none;
+  }
+}
