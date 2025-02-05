@@ -1,7 +1,7 @@
 <template>
   <div class="passage">
     <article>
-      <section v-for="chapter, index in renderedSections" v-html="chapter"></section>
+      <section v-for="content in renderedSections" :key="content" v-html="content"></section>
     </article>
   </div>
 </template>
