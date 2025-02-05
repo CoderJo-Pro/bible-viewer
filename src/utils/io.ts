@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core"
-import { resolve, appDataDir, tempDir, extname, join, basename } from "@tauri-apps/api/path"
+import { resolve, appDataDir, tempDir, extname, basename } from "@tauri-apps/api/path"
 import { decode, encode } from "@msgpack/msgpack"
 import { BookObj } from "./passage-renderer"
 import * as fs from "@tauri-apps/plugin-fs"
@@ -19,6 +19,10 @@ const translationsUrl = "https://ebible.org/Scriptures/translations.csv"
 const translationsPath = await resolve(await appDataDir(), "translations")
 const tempDownloadTranslationPath = await resolve(await tempDir(), "TEMP_ZIP.zip")
 
+function getUsfmUrl(record: TranslationRecord) {
+  return `https://ebible.org/Scriptures/${record.translationId}_usfm.zip`
+}
+
 async function fetchTranslationList() {
   const response = await fetch(translationsUrl)
   if (!response.ok || response.status !== 200) {
@@ -30,7 +34,7 @@ async function fetchTranslationList() {
 }
 
 async function fetchTranslation(record: TranslationRecord) {
-  const url = `https://ebible.org/Scriptures/${record.translationId}_usfm.zip`
+  const url = getUsfmUrl(record)
   const tempExtractTranslationPath = await resolve(await tempDir(), record.translationId)
 
   console.log(`Translation download url: ${url}`)
@@ -44,6 +48,22 @@ async function fetchTranslation(record: TranslationRecord) {
 
   console.log("Translation successfully downloaded and extracted")
   return tempExtractTranslationPath
+}
+
+async function fetchUsfmTranslations() {
+  const translations = await fetchTranslationList()
+  if (!translations) {
+    return null
+  }
+
+  const responses = translations.data.map((record) =>
+    fetch(getUsfmUrl(record), { mode: "no-cors" }).then((response) =>
+      response.status === 200 && response.ok ? record : null,
+    ),
+  )
+
+  const results = await Promise.all(responses)
+  return results.filter((result) => result !== null)
 }
 
 async function resolveTranslation(extracted: string) {
@@ -115,4 +135,4 @@ async function loadBook(translationId: string, book: string) {
   return decoded as BookObj
 }
 
-export { fetchTranslationList, installTranslation, getInstalledTranslations, loadBook }
+export { fetchTranslationList, fetchUsfmTranslations, installTranslation, getInstalledTranslations, loadBook }
