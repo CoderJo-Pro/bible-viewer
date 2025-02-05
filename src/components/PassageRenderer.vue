@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import { getInstalledTranslations, loadBook } from "../utils/io"
-import { parse } from "../utils/passage-parser"
+import { parse } from "../utils/reference-parser"
 import { PassageRenderer, sliceChapters } from "../utils/passage-renderer"
 import { ref, watch } from "vue"
 
