@@ -5,7 +5,6 @@ import { BookObj } from "./passage-renderer"
 import * as fs from "@tauri-apps/plugin-fs"
 import Papa from "papaparse"
 import abbrs from "../assets/json/book-abbr.json"
-import usfm from "usfm-js"
 
 interface TranslationRecord {
   languageCode: string
@@ -59,7 +58,7 @@ async function fetchUsfmTranslations() {
   const responses = translations.data.map((record) =>
     fetch(getUsfmUrl(record), { mode: "no-cors" }).then((response) =>
       response.status === 200 && response.ok ? record : null,
-    ),
+    ).catch(() => null),
   )
 
   const results = await Promise.all(responses)
