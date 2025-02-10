@@ -13,6 +13,7 @@ For more information on how to work with the project, see the [Tauri documentati
 - Rust
 - Webview2 runtime
 
+Remember to install the npm dependencies before running the project.
 
 ```sh
 # Get inside the repository
@@ -23,25 +24,21 @@ npm install
 
 ### Run the project
 
-The command below will launch the application in development environment.
+You can launch the project in development mode by running the following command:
 
 ```sh
-# Run the project in development mode
 npm run tauri dev
 ```
 
 ### Build Steps
 
-Below is how you can build the project for production.
+You can build the project for production by running the following command:
 
 ```sh
-# Build the whole project
 npm run tauri build
-
-# Run the built project
-cd src-tauri/target/release
-./bible-viewer
 ```
+
+The built executable will be located at `src-tauri/target/release`.
 
 ## Development
 
