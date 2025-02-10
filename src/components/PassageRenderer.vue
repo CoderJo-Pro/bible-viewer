@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { getInstalledTranslations, loadBook } from "../utils/io"
 import { parse } from "../utils/reference-parser"
-import { PassageRenderer, sliceChapters } from "../utils/passage-renderer"
+import { PassageRenderer, sliceBook } from "../utils/passage-renderer"
 import { ref, watch } from "vue"
 
 const props = defineProps<{
@@ -40,10 +40,11 @@ const render = async (reference: string) => {
       continue
     }
 
-    const chapters = sliceChapters(book, entity.start, entity.end)
+    const chapters = sliceBook(book, entity.start, entity.end)
+    console.log(chapters);
 
     for (const chapter of chapters) {
-      renderer.renderChapterObject(chapter)
+      renderer.renderChapter(chapter)
     }
 
     renderedSections.value.push(renderer.render())

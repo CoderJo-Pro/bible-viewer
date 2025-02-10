@@ -1,24 +1,4 @@
-interface BookObj {
-  headers: VerseObj[]
-  chapters: {
-    [chapter: string]: ChapterObj
-  }
-}
-
-interface ChapterObj {
-  [verse: string]: {
-    verseObjects: VerseObj[]
-  }
-}
-
-interface VerseObj {
-  tag?: string
-  type?: string
-  text?: string
-  nextChar?: string
-  content?: string
-  children?: VerseObj[]
-}
+import { Book, Chapter, Meta, Verse, VerseItem } from "./passage-types"
 
 interface CvRef {
   c: number
@@ -27,110 +7,121 @@ interface CvRef {
 
 class PassageRenderer {
   tokens: string[] = []
-  section: string[] = []
   paragraph: string[] = []
 
-  isFront = false
-
-  pushSection(tokens: string[]) {
-    tokens.push(...this.section)
+  rawPushParagraph(tokens: string[]) {
+    tokens.push("<p>")
+    tokens.push(...this.paragraph)
+    tokens.push("</p>")
   }
 
-  pushParagraph(section: string[]) {
-    section.push("<p>")
-    section.push(...this.paragraph)
-    section.push("</p>")
+  pushParagraph() {
+    if (this.paragraph.length) {
+      this.rawPushParagraph(this.tokens)
+      this.paragraph.length = 0
+    }
   }
 
-  renderVerseObjects(verseObjects: VerseObj[]): string {
-    const tokens: string[] = []
-
-    for (const obj of verseObjects) {
-      if (obj.text) {
-        this.paragraph.push("<span>")
-        this.paragraph.push(obj.text!.trimEnd())
-        this.paragraph.push("</span>")
-      } else if (obj.type === "paragraph" && this.paragraph.length) {
-        this.pushParagraph(tokens)
-        this.paragraph.length = 0
-      } else if (obj.type === "section") {
-        if (this.isFront) {
-          this.isFront = false
-
-          tokens.push("<h2>")
-          tokens.push(obj.content!.trim())
-          tokens.push("</h2>")
-
-          this.pushParagraph(this.section)
-          this.paragraph.length = 0
-          this.pushSection(tokens)
-          this.section.length = 0
-        } else {
-          this.pushParagraph(this.section)
-          this.paragraph.length = 0
-          this.pushSection(tokens)
-          this.section.length = 0
-
-          tokens.push("<h2>")
-          tokens.push(obj.content!.trim())
-          tokens.push("</h2>")
-        }
+  renderVerseItems(verseItems: VerseItem[]) {
+    for (const verseItem of verseItems) {
+      if (verseItem.type === "text") {
+        this.paragraph.push(verseItem.content.trim())
       }
 
-      if (obj.children) {
-        this.paragraph.push(this.renderVerseObjects(obj.children))
+      if (verseItem.type === "style") {
+        this.renderVerseItems(verseItem.content)
       }
     }
-
-    return tokens.join("")
   }
 
-  renderChapterObject(chapterObject: ChapterObj) {
-    for (const verseKey of Object.keys(chapterObject)) {
-      const verseObjects = chapterObject[verseKey].verseObjects
-
-      if (isFinite(Number(verseKey))) {
-        this.paragraph.push(`<sup>${verseKey}</sup>`)
-      } else if (verseKey === "front") {
-        this.isFront = true
+  renderChapter(chapter: Chapter) {
+    for (const chapterItem of chapter.content) {
+      if (chapterItem.tag === "v") {
+        const verse = chapterItem as Verse
+        this.paragraph.push(`<span class="v-${verse.verse}">`)
+        this.paragraph.push(`<sup>${verse.verse}</sup>`)
+        this.renderVerseItems(verse.content)
+        this.paragraph.push("</span>")
+      } else {
+        const meta = chapterItem as Meta
+        if (meta.tag === "p") {
+          this.pushParagraph()
+        } else if (meta.tag === "s") {
+          this.pushParagraph()
+          this.tokens.push(`<div class="section-title" role="heading">${meta.content?.trim()}</div>`)
+        }
       }
-
-      this.section.push(this.renderVerseObjects(verseObjects))
     }
   }
 
   render(): string {
     const tokens = [...this.tokens]
-    this.pushSection(tokens)
-    this.pushParagraph(tokens)
+    this.rawPushParagraph(tokens)
     return tokens.join("")
   }
 }
 
-function sliceChapter(chapter: ChapterObj, comparer: (k: number) => boolean) {
-  return Object.fromEntries(
-    Object.entries(chapter).filter(([k]) => {
-      const numberK = Number(k)
-      return !isFinite(numberK) || comparer(numberK)
-    }),
-  )
+function sliceChapterStart(chapter: Chapter, start: number): Chapter {
+  const chapterItems = chapter.content
+  let startIndex: number = 0
+  let sectionIndex: number | undefined
+
+  for (let i = 0; i < chapterItems.length; i++) {
+    const item = chapterItems[i]
+    if (["s", "ms"].includes(item.tag)) {
+      sectionIndex = i
+    } else if (item.tag === "v") {
+      if (item.verse === start) {
+        startIndex = sectionIndex ?? i
+        break
+      } else {
+        sectionIndex = undefined
+      }
+    }
+  }
+
+  return {
+    tag: "c",
+    chapter: chapter.chapter,
+    content: chapterItems.slice(startIndex, chapterItems.length + 1),
+  }
 }
 
-function sliceChapters(book: BookObj, start: CvRef, end: CvRef): ChapterObj[] {
-  // Filter verses within the range start of the entity
-  const firstChapter = book.chapters[start.c]
-  const chapters: ChapterObj[] = [sliceChapter(firstChapter, (k) => k >= start.v)]
+function sliceChapterEnd(chapter: Chapter, end: number): Chapter {
+  const chapterItems = chapter.content
+  let endIndex: number | undefined
 
-  for (let c = start.c + 1; c <= end.c; c++) {
+  for (let i = 0; i < chapterItems.length; i++) {
+    const item = chapterItems[i]
+    if (item.tag === "v" && item.verse === end) {
+      endIndex = i
+    } else if (item.tag === "p" && endIndex) {
+      endIndex = i
+      break
+    }
+  }
+  return {
+    tag: "c",
+    chapter: chapter.chapter,
+    content: chapterItems.slice(0, (endIndex ?? chapterItems.length) + 1),
+  }
+}
+
+function sliceBook(book: Book, start: CvRef, end: CvRef): Chapter[] {
+  // Filter verses within the range start of the entity
+  const firstChapter = book.chapters[start.c - 1]
+  const chapters: Chapter[] = [sliceChapterStart(firstChapter, start.v)]
+
+  for (let c = start.c; c < end.c; c++) {
     chapters.push(book.chapters[c])
   }
 
   // Filter verses within the range end of the entity
   const lastChapter = chapters[chapters.length - 1]
-  chapters[chapters.length - 1] = sliceChapter(lastChapter, (k) => k <= end.v)
+  chapters[chapters.length - 1] = sliceChapterEnd(lastChapter, end.v)
 
   return chapters
 }
 
-export type { BookObj, ChapterObj, VerseObj }
-export { PassageRenderer, sliceChapters }
+// export type { BookObj, ChapterObj, VerseObj }
+export { PassageRenderer, sliceBook }

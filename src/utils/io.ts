@@ -1,7 +1,8 @@
 import { invoke } from "@tauri-apps/api/core"
 import { resolve, appDataDir, tempDir, extname, basename } from "@tauri-apps/api/path"
 import { decode, encode } from "@msgpack/msgpack"
-import { BookObj } from "./passage-renderer"
+import { transformBook } from "./passage-transformer"
+import { Book } from "./passage-types"
 import * as fs from "@tauri-apps/plugin-fs"
 import Papa from "papaparse"
 import abbrs from "../assets/json/book-abbr.json"
@@ -94,7 +95,7 @@ async function resolveTranslation(extracted: string) {
 
       resolves.push(
         fs.readTextFile(filePath).then(async (content) => {
-          const encoded = encode(usfm.toJSON(content))
+          const encoded = encode(transformBook(usfm.toJSON(content)))
           const encodedFile = await resolve(translationFolder, fileName)
 
           await fs.writeFile(encodedFile, encoded)
@@ -132,7 +133,7 @@ async function loadBook(translationId: string, book: string) {
   }
 
   const decoded = decode(await fs.readFile(chapterFile))
-  return decoded as BookObj
+  return decoded as Book
 }
 
 export { fetchTranslationList, fetchUsfmTranslations, installTranslation, getInstalledTranslations, loadBook }

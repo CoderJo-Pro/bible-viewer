@@ -10,12 +10,12 @@
       content: "  ";
     }
   }
-  
-  h2 {
-    @apply mb-4 text-2xl select-none;
-  }
 
   sup {
     @apply select-none;
+  }
+
+  .section-title {
+    @apply mb-4 text-2xl select-none;
   }
 }
