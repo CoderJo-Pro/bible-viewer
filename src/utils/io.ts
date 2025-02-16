@@ -12,16 +12,45 @@ interface TranslationRecord {
   languageCode: string
   translationId: string
   languageName: string
+  languageNameInEnglish: string
+  dialect: string
+  homeDomain: string
+  title: string
+  description: string
+  Redistributable: string
+  Copyright: string
+  UpdateDate: string
   publicationURL: string
+  OTbooks: string
+  OTchapters: string
+  OTverses: string
+  NTbooks: string
+  NTchapters: string
+  NTverses: string
+  DCbooks: string
+  DCchapters: string
+  DCverses: string
+  FCBHID: string
+  Certified: string
+  inScript: string
+  swordName: string
+  rodCode: string
+  textDirection: string
+  downloadable: string
+  font: string
+  shortTitle: string
+  PODISBN: string
+  script: string
+  sourceDate: string
 }
 
 const translationsUrl = "https://ebible.org/Scriptures/translations.csv"
+const zipListDocUrl = "https://ebible.org/Scriptures/dir.php"
 
 const translationsPath = await resolve(await appDataDir(), "translations")
-const tempDownloadTranslationPath = await resolve(await tempDir(), "TEMP_ZIP.zip")
 
-function getUsfmUrl(record: TranslationRecord) {
-  return `https://ebible.org/Scriptures/${record.translationId}_usfm.zip`
+function getUsfmUrl(translationId: string) {
+  return `https://ebible.org/Scriptures/${translationId}_usfm.zip`
 }
 
 async function fetchTranslationList() {
@@ -34,16 +63,14 @@ async function fetchTranslationList() {
   return Papa.parse<TranslationRecord>(data, { header: true })
 }
 
-async function fetchTranslation(record: TranslationRecord) {
-  const url = getUsfmUrl(record)
-  const tempExtractTranslationPath = await resolve(await tempDir(), record.translationId)
+async function fetchTranslation(translationId: string) {
+  const url = getUsfmUrl(translationId)
+  const tempExtractTranslationPath = await resolve(await tempDir(), translationId)
 
   console.log(`Translation download url: ${url}`)
-  console.log(tempDownloadTranslationPath, tempExtractTranslationPath)
 
   await invoke("download_file", {
     url,
-    savePath: tempDownloadTranslationPath,
     extractPath: tempExtractTranslationPath,
   })
 
@@ -52,19 +79,37 @@ async function fetchTranslation(record: TranslationRecord) {
 }
 
 async function fetchUsfmTranslations() {
-  const translations = await fetchTranslationList()
-  if (!translations) {
+  const response = await fetch(zipListDocUrl)
+  const doc = new DOMParser().parseFromString(await response.text(), "text/html")
+
+  const zipLinks = doc.querySelector("tbody")?.querySelectorAll("a")
+  if (!zipLinks) {
     return null
   }
 
-  const responses = translations.data.map((record) =>
-    fetch(getUsfmUrl(record), { mode: "no-cors" }).then((response) =>
-      response.status === 200 && response.ok ? record : null,
-    ).catch(() => null),
-  )
+  const translationIds: string[] = []
 
-  const results = await Promise.all(responses)
-  return results.filter((result) => result !== null)
+  for (const zipLink of zipLinks) {
+    const match = zipLink.innerHTML.match(/^((?:\w|-)+)_usfm\.zip$/)
+    if (match) {
+      translationIds.push(match[1])
+    }
+  }
+
+  return translationIds
+}
+
+async function fetchTranslations() {
+  const [records, usfmVersions] = await Promise.all([
+    fetchTranslationList(),
+    fetchUsfmTranslations(),
+  ])
+
+  if (!(records && usfmVersions)) {
+    return undefined
+  }
+
+  return records.data.filter((record) => usfmVersions.includes(record.translationId))
 }
 
 async function resolveTranslation(extracted: string) {
@@ -111,8 +156,8 @@ async function resolveTranslation(extracted: string) {
   console.log(`Translation ${translationId} successfully resolved to ${translationFolder}`)
 }
 
-async function installTranslation(record: TranslationRecord) {
-  const extracted = await fetchTranslation(record)
+async function installTranslation(translationId: string) {
+  const extracted = await fetchTranslation(translationId)
   await resolveTranslation(extracted)
 }
 
@@ -136,4 +181,5 @@ async function loadBook(translationId: string, book: string) {
   return decoded as Book
 }
 
-export { fetchTranslationList, fetchUsfmTranslations, installTranslation, getInstalledTranslations, loadBook }
+export type { TranslationRecord }
+export { fetchTranslations, installTranslation, getInstalledTranslations, loadBook }
