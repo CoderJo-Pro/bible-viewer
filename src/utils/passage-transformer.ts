@@ -5,23 +5,42 @@ function matchAlphabets(str: string): string {
   return str.match(/[A-Za-z]+/)![0]
 }
 
-function transformVerseObjects(verseObjects: VerseObj[]): VerseItem[] {
+function transformVerseObjects(verseObjects: VerseObj[]): [VerseItem[], Meta[]] {
   const verseItems: VerseItem[] = []
+  const metas: Meta[] = []
 
   for (const verseObj of verseObjects) {
     if (verseObj.type === "text") {
       verseItems.push({ type: "text", content: verseObj.text! })
-    } else if (verseObj.children) {
-      const tag = matchAlphabets(verseObj.tag!) as any
-      const children = transformVerseObjects(verseObj.children)
+    } else if (verseObj.tag) {
+      const tag = matchAlphabets(verseObj.tag!)
 
-      if (verseObj.text) children.unshift({ type: "text", content: verseObj.text })
-      const style: Style = { tag, type: "style", content: children }
-      verseItems.push(style)
+      if (["add", "pn"].includes(tag)) {
+        const children: VerseItem[] = []
+
+        if (verseObj.text) {
+          children.push({ type: "text", content: verseObj.text })
+        }
+
+        if (verseObj.children) {
+          const [v, m] = transformVerseObjects(verseObj.children)
+          children.push(...v)
+          metas.push(...m)
+        }
+
+        const style: Style = { tag: tag as any, type: "style", content: children }
+        verseItems.push(style)
+      } else if (["s", "p"].includes(tag)) {
+        const meta: Meta = {
+          tag: tag as any,
+          content: verseObj.content,
+        }
+        metas.push(meta)
+      }
     }
   }
 
-  return verseItems
+  return [verseItems, metas]
 }
 
 export function transformBook(bookObj: BookObj): Book {
@@ -65,9 +84,10 @@ export function transformBook(bookObj: BookObj): Book {
       }
 
       const verseObjects = chapterObj[verseKey].verseObjects
-      const verseItems: VerseItem[] = transformVerseObjects(verseObjects)
+      const [verseItems, metas] = transformVerseObjects(verseObjects)
 
       chapterItems.push({ tag: "v", verse: parseInt(verseKey), content: verseItems })
+      chapterItems.push(...metas)
     }
 
     chapters.push({ tag: "c", chapter: chapterNumber, content: chapterItems })
