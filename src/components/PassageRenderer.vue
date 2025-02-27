@@ -7,13 +7,14 @@
 </template>
 
 <script lang="ts" setup>
-import { getInstalledTranslations, loadBook } from "../utils/io"
+import { loadBook } from "../utils/io"
 import { parse } from "../utils/reference-parser"
 import { PassageRenderer, sliceBook } from "../utils/passage-renderer"
 import { ref, watch } from "vue"
 
 const props = defineProps<{
   reference: string
+  translations: string[]
 }>()
 
 const renderedSections = ref<string[]>([])
@@ -25,12 +26,12 @@ const render = async (reference: string) => {
   const entitiesWrapper = passage.parsed_entities()[0] as any
   const entities = entitiesWrapper.entities
 
-  const translation = (await getInstalledTranslations())![0]
-  const renderer = new PassageRenderer()
-
+  const translation = props.translations[0]!
+  
   renderedSections.value.length = 0
 
   for (const outerEntity of entities) {
+    const renderer = new PassageRenderer()
     console.log(outerEntity)
     const entity = outerEntity.entities[0]
 
