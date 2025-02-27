@@ -119,7 +119,10 @@ async function resolveTranslation(extracted: string) {
 
   console.log(`Resolving translation ${translationId} at ${extracted} to ${translationFolder}`)
 
-  await fs.remove(translationFolder, { recursive: true })
+  if (await fs.exists(translationFolder)) {
+    await fs.remove(translationFolder, { recursive: true })
+  }
+
   await fs.mkdir(translationFolder, { recursive: true })
 
   const resolves: Promise<unknown>[] = []
@@ -163,7 +166,7 @@ async function installTranslation(translationId: string) {
 
 async function getInstalledTranslations() {
   if (!(await fs.exists(translationsPath))) {
-    return null
+    return undefined
   }
 
   const dirs = await fs.readDir(translationsPath)

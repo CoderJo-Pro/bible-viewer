@@ -9,15 +9,20 @@
       />
     </div>
     <div class="divider"></div>
-    <PassageRenderer :reference="reference"></PassageRenderer>
+    <PassageRenderer :reference="osis" :translations="selectedTranslations ?? []"></PassageRenderer>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue"
+import { computed, ref } from "vue"
 import PassageRenderer from "../components/PassageRenderer.vue"
+import { parse } from "../utils/reference-parser"
+import { useTranslations } from "../composables/useTranslations"
 
-const reference = ref("John 3:16")
+const { selectedTranslations } = useTranslations()
+
+const reference = ref("Genesis 1")
+const osis = computed((oldVal?: string) => parse(reference.value).osis() || oldVal || "")
 </script>
 
 <style></style>
