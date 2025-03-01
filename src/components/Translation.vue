@@ -58,7 +58,6 @@ watch(selected, (value) => {
   } else {
     translations.disable(props.record.translationId)
   }
-  console.log(translations.selectedTranslations.value)
 })
 </script>
 

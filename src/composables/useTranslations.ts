@@ -1,8 +1,7 @@
 import { ref } from "vue"
-import { getInstalledTranslations, TranslationRecord } from "../utils/io"
+import { getInstalledTranslations } from "../utils/io"
 
 const translations = {
-  translations: ref<TranslationRecord[]>(),
   installedTranslations: ref<string[]>(),
   selectedTranslations: ref<string[]>([]),
 

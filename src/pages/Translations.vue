@@ -25,10 +25,15 @@ import { useTranslations } from "../composables/useTranslations.ts"
 import { fetchTranslations, getInstalledTranslations, TranslationRecord } from "../utils/io"
 import { ViewType } from "../utils/translation-manage-types.ts"
 
+definePageMeta({
+  keepalive: true,
+})
+
 const selectedType = ref("download")
 const selectedLanguage = ref("give me all!")
+const translations = ref<TranslationRecord[]>()
 
-const { translations, installedTranslations } = useTranslations()
+const { installedTranslations } = useTranslations()
 
 const isInstalledType = computed(() => selectedType.value === ViewType.installed)
 

@@ -9,7 +9,7 @@
       />
     </div>
     <div class="divider"></div>
-    <PassageRenderer :reference="osis" :translations="selectedTranslations ?? []"></PassageRenderer>
+    <PassageRenderer :reference="osis" :translations="selectedTranslations"></PassageRenderer>
   </div>
 </template>
 
@@ -18,6 +18,10 @@ import { computed, ref } from "vue"
 import PassageRenderer from "../components/PassageRenderer.vue"
 import { parse } from "../utils/reference-parser"
 import { useTranslations } from "../composables/useTranslations"
+
+definePageMeta({
+  keepalive: true,
+})
 
 const { selectedTranslations } = useTranslations()
 
