@@ -10,7 +10,7 @@
 import { loadBook } from "../utils/io"
 import { parse } from "../utils/reference-parser"
 import { PassageRenderer, sliceBook } from "../utils/passage-renderer"
-import { ref, watch } from "vue"
+import { ref, watchEffect } from "vue"
 
 const props = defineProps<{
   reference: string
@@ -19,15 +19,15 @@ const props = defineProps<{
 
 const renderedSections = ref<string[]>([])
 
-const render = async (reference: string) => {
-  const passage = parse(reference)
+watchEffect(async () => {
+  const passage = parse(props.reference)
   console.log(passage.parsed_entities())
 
   const entitiesWrapper = passage.parsed_entities()[0] as any
   const entities = entitiesWrapper.entities
 
   const translation = props.translations[0]!
-  
+
   renderedSections.value.length = 0
 
   for (const outerEntity of entities) {
@@ -42,7 +42,7 @@ const render = async (reference: string) => {
     }
 
     const chapters = sliceBook(book, entity.start, entity.end)
-    console.log(chapters);
+    console.log(chapters)
 
     for (const chapter of chapters) {
       renderer.renderChapter(chapter)
@@ -50,10 +50,7 @@ const render = async (reference: string) => {
 
     renderedSections.value.push(renderer.render())
   }
-}
-
-render(props.reference)
-watch(() => props.reference, render)
+})
 </script>
 
 <style src="@/css/passage.css"></style>
