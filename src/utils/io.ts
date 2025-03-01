@@ -5,6 +5,7 @@ import { BookObj } from "./passage-renderer"
 import * as fs from "@tauri-apps/plugin-fs"
 import Papa from "papaparse"
 import abbrs from "../assets/json/book-abbr.json"
+import usfm from "usfm-js"
 
 interface TranslationRecord {
   languageCode: string
