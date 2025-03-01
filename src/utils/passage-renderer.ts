@@ -25,7 +25,7 @@ class PassageRenderer {
   renderVerseItems(verseItems: VerseItem[]) {
     for (const verseItem of verseItems) {
       if (verseItem.type === "text") {
-        this.paragraph.push(verseItem.content.trim())
+        this.paragraph.push(verseItem.content)
       }
 
       if (verseItem.type === "style") {
@@ -55,10 +55,14 @@ class PassageRenderer {
           this.pushParagraph()
         } else if (meta.tag === "s") {
           this.pushParagraph()
-          this.tokens.push(`<div class="section-title" role="heading">${meta.content?.trim()}</div>`)
+          this.tokens.push(
+            `<div class="section-title" role="heading">${meta.content?.trim()}</div>`,
+          )
         }
       }
     }
+
+    this.pushParagraph()
   }
 
   render(): string {
