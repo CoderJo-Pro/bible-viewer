@@ -1,27 +1,25 @@
-import { ref } from "vue"
+import { computed, reactive, ref } from "vue"
 import { getInstalledTranslations } from "../utils/io"
+
+const selectedTranslations = reactive(new Set<string>())
 
 const translations = {
   installedTranslations: ref<string[]>(),
-  selectedTranslations: ref<string[]>([]),
+  selectedTranslations: computed(() => [...selectedTranslations.values()]),
 
   async loadInstalledTranslations() {
     this.installedTranslations.value = await getInstalledTranslations()
   },
 
   isEnabled(translationId: string) {
-    return this.selectedTranslations.value.includes(translationId)
+    return selectedTranslations.has(translationId)
   },
 
-  enable(...translationIds: string[]) {
-    this.selectedTranslations.value?.push(
-      ...translationIds.filter((id) => !this.selectedTranslations.value?.includes(id)),
-    )
+  enable(translationId: string) {
+    selectedTranslations.add(translationId)
   },
-  disable(...translationIds: string[]) {
-    this.selectedTranslations.value = this.selectedTranslations.value?.filter(
-      (id) => !translationIds.includes(id),
-    )
+  disable(translationId: string) {
+    selectedTranslations.delete(translationId)
   },
 }
 
