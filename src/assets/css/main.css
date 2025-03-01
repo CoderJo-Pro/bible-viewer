@@ -7,16 +7,21 @@
 
 @layer utilities {
   .btn {
+    @apply translate-none;
+
+    &:not(.btn-outline) {
+      @apply border-none;
+    }
+
     &:hover {
-      @apply active:scale-95 border-none translate-none;
+      @apply active:scale-95;
       transition: scale 0.1s ease-in-out;
     }
   }
 
-  .btn-ghost {
-    /* change "alpha - 0.8" to fit daisy design */
+  & .btn-ghost {
     /* --btn-ghost-bg: oklch(from var(--color-base-content) l c h / calc(alpha - 0.8)); */
-    --btn-ghost-bg: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+    --btn-ghost-bg: color-mix(in oklab, var(--color-base-content), transparent 80%);
 
     &:hover {
       --btn-bg: color-mix(in oklab, var(--btn-color, var(--btn-ghost-bg)), black 7%);
