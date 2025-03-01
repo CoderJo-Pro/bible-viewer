@@ -29,7 +29,9 @@ class PassageRenderer {
       }
 
       if (verseItem.type === "style") {
+        this.paragraph.push(`<span class="${verseItem.tag}">`)
         this.renderVerseItems(verseItem.content)
+        this.paragraph.push("</span>")
       }
     }
   }
@@ -38,7 +40,12 @@ class PassageRenderer {
     for (const chapterItem of chapter.content) {
       if (chapterItem.tag === "v") {
         const verse = chapterItem as Verse
-        this.paragraph.push(`<span class="v-${verse.verse}">`)
+
+        if (verse.verse === 1) {
+          this.paragraph.push(`<span chapter="${chapter.chapter}">${chapter.chapter}</span>`)
+        }
+
+        this.paragraph.push(`<span verse="${verse.verse}">`)
         this.paragraph.push(`<sup>${verse.verse}</sup>`)
         this.renderVerseItems(verse.content)
         this.paragraph.push("</span>")

@@ -1,21 +1,42 @@
 @import "tailwindcss";
 
 .passage {
-  @apply tracking-wide;
+  @apply tracking-wide leading-relaxed;
+  word-spacing: .1rem;
 
-  p {
+  & p {
     @apply mb-4;
 
-    &::before {
+    &:not(:has([chapter]))::before {
       content: "  ";
     }
   }
 
-  sup {
+  & [chapter] {
+    @apply mr-2 float-left font-bold text-[180%] select-none;
+
+    & + [verse="1"] > sup {
+      @apply hidden;
+    }
+  }
+
+  & sup {
     @apply select-none;
   }
 
-  .section-title {
+  & .section-title {
     @apply mb-4 text-2xl select-none;
+  }
+
+  & :is(.add, .pn) {
+    @apply border-b-2 border-current/90;
+  }
+
+  & .add {
+    @apply border-dotted;
+
+    & .pn {
+      @apply pb-1;
+    }
   }
 }
