@@ -10,10 +10,9 @@ function transformVerseObjects(verseObjects: VerseObj[]): [VerseItem[], Meta[]] 
   const metas: Meta[] = []
 
   for (const verseObj of verseObjects) {
-    if (verseObj.type === "text") {
-      verseItems.push({ type: "text", content: verseObj.text! })
-    } else if (verseObj.tag) {
-      const tag = matchAlphabets(verseObj.tag!)
+    if (verseObj.tag) {
+      const tag = matchAlphabets(verseObj.tag)
+      let isPlainText = false
 
       if (["add", "pn"].includes(tag)) {
         const children: VerseItem[] = []
@@ -36,7 +35,17 @@ function transformVerseObjects(verseObjects: VerseObj[]): [VerseItem[], Meta[]] 
           content: verseObj.content,
         }
         metas.push(meta)
+      } else {
+        isPlainText = true
       }
+
+      if (!isPlainText) {
+        continue
+      }
+    }
+
+    if (verseObj.text) {
+      verseItems.push({ type: "text", content: verseObj.text })
     }
   }
 
@@ -60,20 +69,22 @@ export function transformBook(bookObj: BookObj): Book {
       let isAfterSection = false
 
       for (const verseObj of verseObjects) {
-        const tag = matchAlphabets(verseObj.tag!)
-        const meta: Meta = {
-          tag: tag as any,
-          content: verseObj.content,
-        }
+        if (verseObj.tag) {
+          const tag = matchAlphabets(verseObj.tag)
+          const meta: Meta = {
+            tag: tag as any,
+            content: verseObj.content,
+          }
 
-        if (tag === "s") {
-          isAfterSection = true
-        }
+          if (tag === "s") {
+            isAfterSection = true
+          }
 
-        if (isAfterSection) {
-          chapterItems.push(meta)
-        } else {
-          chapters[chapterNumber - 1]?.content.push(meta)
+          if (isAfterSection) {
+            chapterItems.push(meta)
+          } else {
+            chapters[chapterNumber - 1]?.content.push(meta)
+          }
         }
       }
     }
