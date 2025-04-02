@@ -17,6 +17,7 @@
     "@tauri-apps/plugin-fs": "^2.2.0",
     "@tauri-apps/plugin-opener": "^2",
     "bible-passage-reference-parser": "^3.0.0",
+    "hotkeys-js": "^3.13.9",
     "nuxt": "^3",
     "papaparse": "^5.5.2",
     "usfm-js": "^3.4.3"
