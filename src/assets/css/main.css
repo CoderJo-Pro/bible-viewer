@@ -1,35 +1,50 @@
 @import "tailwindcss";
-@plugin "daisyui";
-@plugin "daisyui/theme" {
-  name: "dark";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+:root {
   --depth: 0;
 }
 
-@layer utilities {
-  .btn {
-    @apply translate-none;
+.btn {
+  @apply animate-[button-pop_0.25s_ease-out] shadow-none transition duration-200 ease-out;
 
-    &:not(.btn-outline) {
-      @apply border-none;
-    }
-
-    &:hover {
-      @apply active:scale-95;
-      transition: scale 0.1s ease-in-out;
+  &:active {
+    &:hover,
+    &:focus {
+      @apply translate-none scale-97 animate-[button-pop_0s_ease-out];
     }
   }
 
-  & .btn-ghost {
-    /* --btn-ghost-bg: oklch(from var(--color-base-content) l c h / calc(alpha - 0.8)); */
-    --btn-ghost-bg: color-mix(in oklab, var(--color-base-content), transparent 80%);
+  &:not(.btn-active, .btn-ghost, .btn-soft, .btn-outline, .btn-dash) {
+    --btn-bg: var(
+      --btn-color,
+      color-mix(in oklab, var(--color-base-content) 2.5%, var(--color-base-100))
+    );
+  }
 
-    &:hover {
-      --btn-bg: color-mix(in oklab, var(--btn-color, var(--btn-ghost-bg)), black 7%);
-    }
+  .btn-active,
+  &:hover {
+    --btn-bg: var(
+      --btn-color,
+      color-mix(in oklab, var(--color-base-content) 11%, var(--color-base-100))
+    );
+  }
 
-    &:active:not(.btn-active) {
-      --btn-bg: color-mix(in oklab, var(--btn-color, var(--btn-ghost-bg)), black 5%);
-      --btn-border: color-mix(in oklab, var(--btn-color, var(--btn-ghost-bg)), black 7%);
-    }
+  &:not(.btn-outline, .btn-dash) {
+    @apply border-none;
+  }
+}
+
+@keyframes button-pop {
+  0% {
+    scale: 0.98;
+  }
+  40% {
+    scale: 1.02;
+  }
+  to {
+    scale: 1;
   }
 }
