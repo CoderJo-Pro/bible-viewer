@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue"
 import { useTranslations } from "../composables/useTranslations.ts"
-import { fetchTranslations, getInstalledTranslations, TranslationRecord } from "../utils/io"
+import { getTranslationList, getInstalledTranslations, TranslationRecord } from "../utils/io/translation-list.ts"
 import { ViewType } from "../utils/translation-manage-types.ts"
 
 definePageMeta({
@@ -87,7 +87,7 @@ const languages = computed(() => {
 
 async function load() {
   await Promise.all([
-    fetchTranslations().then((v) => (translations.value = v)),
+    getTranslationList().then((v) => (translations.value = v)),
     getInstalledTranslations().then((v) => (installedTranslations.value = v)),
   ])
   console.log("Translations loaded")

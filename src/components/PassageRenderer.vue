@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { loadBook } from "../utils/io"
+import { loadBook } from "../utils/io/translation"
 import { parse } from "../utils/reference-parser"
 import { PassageRenderer, sliceBook } from "../utils/passage-renderer"
 import { ref, watchEffect } from "vue"

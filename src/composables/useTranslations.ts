@@ -1,5 +1,5 @@
 import { computed, reactive, ref } from "vue"
-import { getInstalledTranslations } from "../utils/io"
+import { getInstalledTranslations } from "../utils/io/translation-list"
 
 const selectedTranslations = reactive(new Set<string>())
 

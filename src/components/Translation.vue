@@ -17,9 +17,10 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue"
-import { installTranslation, type TranslationRecord } from "../utils/io"
 import { useTranslations } from "../composables/useTranslations"
 import { AllViewTypes, ViewType } from "../utils/translation-manage-types"
+import { TranslationRecord } from "../utils/io/translation-list";
+import { installTranslation } from "../utils/io/translation";
 
 const props = defineProps<{
   type: AllViewTypes
