@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 .passage {
-  @apply tracking-wide leading-relaxed;
-  word-spacing: .1rem;
+  @apply leading-relaxed tracking-wide;
+  word-spacing: 0.1rem;
 
   & p {
     @apply mb-4;
@@ -13,7 +13,7 @@
   }
 
   & [chapter] {
-    @apply mr-2 float-left font-bold text-[180%] select-none;
+    @apply float-left mr-2 text-[180%] font-bold select-none;
 
     & + [verse="1"] > sup {
       @apply hidden;

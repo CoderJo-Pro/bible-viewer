@@ -1,13 +1,13 @@
 <template>
-  <div class="w-full h-screen flex bg-base-100">
-    <div class="w-1/3 p-3 flex flex-col gap-4 items-center">
+  <div class="bg-base-100 flex h-screen w-full">
+    <div class="flex w-1/3 flex-col items-center gap-4 p-3">
       <div
-        class="w-34 px-4 py-1 flex flex-col justify-center font-mono font-bold text-2xl select-none"
+        class="flex w-34 flex-col justify-center px-4 py-1 font-mono text-2xl font-bold select-none"
       >
         <div class="self-start">Bible</div>
         <div class="self-end">Viewer</div>
       </div>
-      <ul class="w-full h-full p-0 menu font-bold text-current/80 tracking-wider">
+      <ul class="menu h-full w-full p-0 font-bold tracking-wider text-current/80">
         <li v-for="link in links">
           <NuxtLink :to="link[1]" :class="{ 'menu-active': isActive(link[1]) }">
             {{ link[0] }}
@@ -16,7 +16,7 @@
       </ul>
     </div>
     <main class="w-full overflow-hidden">
-      <div ref="main" class="h-full overflow-y-auto bg-base-100">
+      <div ref="main" class="bg-base-100 h-full overflow-y-auto">
         <slot></slot>
       </div>
     </main>

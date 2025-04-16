@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="px-4 navbar border-b border-current/20 bg-base-100 sticky top-0 z-10 join">
-      <select class="join-item w-1/3 select" v-model="selectedType">
+    <div class="navbar bg-base-100 join sticky top-0 z-10 border-b border-current/20 px-4">
+      <select class="join-item select w-1/3" v-model="selectedType">
         <option value="download">Download</option>
         <option value="installed">Installed</option>
       </select>
-      <select class="join-item grow select" v-model="selectedLanguage">
+      <select class="join-item select grow" v-model="selectedLanguage">
         <option :disabled="!isInstalledType" value="give me all!">All Languages</option>
         <option v-for="t in languages" :value="t.languageCode">{{ t.languageName }}</option>
       </select>
@@ -22,7 +22,11 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue"
 import { useTranslations } from "../composables/useTranslations.ts"
-import { getTranslationList, getInstalledTranslations, TranslationRecord } from "../utils/io/translation-list.ts"
+import {
+  getTranslationList,
+  getInstalledTranslations,
+  TranslationRecord,
+} from "../utils/io/translation-list.ts"
 import { ViewType } from "../utils/translation-manage-types.ts"
 
 definePageMeta({

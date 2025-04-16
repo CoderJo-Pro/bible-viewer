@@ -1,5 +1,5 @@
 <template>
-  <label class="w-full flex items-center gap-4 select-none">
+  <label class="flex w-full items-center gap-4 select-none">
     <input
       v-if="props.type === ViewType.installed"
       type="checkbox"
@@ -19,8 +19,8 @@
 import { computed, ref, watch } from "vue"
 import { useTranslations } from "../composables/useTranslations"
 import { AllViewTypes, ViewType } from "../utils/translation-manage-types"
-import { TranslationRecord } from "../utils/io/translation-list";
-import { installTranslation } from "../utils/io/translation";
+import { TranslationRecord } from "../utils/io/translation-list"
+import { installTranslation } from "../utils/io/translation"
 
 const props = defineProps<{
   type: AllViewTypes

@@ -1,9 +1,9 @@
 <template>
   <div class="p-4">
-    <div class="w-full join join-horizontal">
+    <div class="join join-horizontal w-full">
       <button class="join-item btn btn-soft">Bible Menu</button>
       <input
-        class="w-full join-item input font-bold text-current/80"
+        class="join-item input w-full font-bold text-current/80"
         type="text"
         v-model.lazy="reference"
       />
