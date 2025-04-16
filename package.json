@@ -8,6 +8,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "vite preview",
+    "format": "prettier src --write",
     "tauri": "tauri",
     "tdev": "tauri dev"
   },
@@ -27,6 +28,8 @@
     "@tauri-apps/cli": "^2",
     "@types/papaparse": "^5.3.15",
     "daisyui": "^5.0.0-beta.2",
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.0.0"
   }
 }
