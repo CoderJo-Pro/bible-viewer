@@ -106,11 +106,14 @@ function sliceChapterEnd(chapter: Chapter, end: number): Chapter {
     const item = chapterItems[i]
     if (item.tag === "v" && item.verse === end) {
       endIndex = i
-    } else if (item.tag === "p" && endIndex) {
-      endIndex = i
+    } else if (endIndex) {
+      if (item.tag === "p") {
+        endIndex = i
+      }
       break
     }
   }
+
   return {
     tag: "c",
     chapter: chapter.chapter,
