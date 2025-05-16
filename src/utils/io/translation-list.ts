@@ -1,6 +1,5 @@
 import * as fs from "@tauri-apps/plugin-fs"
 import Papa from "papaparse"
-import { paths } from "./path"
 import { decode, encode } from "@msgpack/msgpack"
 
 export interface TranslationRecord {

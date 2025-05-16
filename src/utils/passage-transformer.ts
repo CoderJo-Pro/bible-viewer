@@ -1,6 +1,3 @@
-import { Book, HeaderTag, Chapter, Meta, ChapterItem, VerseItem, Style } from "./passage-types"
-import { BookObj, VerseObj } from "./usfm-js-types"
-
 function matchAlphabets(str: string): string {
   return str.match(/[A-Za-z]+/)![0]
 }

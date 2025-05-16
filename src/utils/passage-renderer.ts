@@ -1,5 +1,3 @@
-import { Book, Chapter, Meta, Verse, VerseItem } from "./passage-types"
-
 interface CvRef {
   c: number
   v: number

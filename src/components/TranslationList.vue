@@ -7,9 +7,6 @@
 </template>
 
 <script lang="ts" setup>
-import { type TranslationRecord } from "../utils/io"
-import { AllViewTypes } from "../utils/translation-manage-types"
-
 const props = defineProps<{
   type: AllViewTypes
   records: TranslationRecord[]

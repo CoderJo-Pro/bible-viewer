@@ -20,15 +20,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue"
-import { useTranslations } from "../composables/useTranslations.ts"
-import {
-  getTranslationList,
-  getInstalledTranslations,
-  TranslationRecord,
-} from "../utils/io/translation-list.ts"
-import { ViewType } from "../utils/translation-manage-types.ts"
-
 definePageMeta({
   keepalive: true,
 })

@@ -16,7 +16,9 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
-
+  imports: {
+    dirs: ["{composables,utils}/**"],
+  },
   alias: {
     "@": resolve(__dirname, "src/assets"),
   },

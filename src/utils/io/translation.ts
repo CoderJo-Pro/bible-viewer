@@ -3,10 +3,7 @@ import abbrs from "../../assets/json/book-abbr.json"
 import usfm from "usfm-js"
 import { invoke } from "@tauri-apps/api/core"
 import { basename, extname, resolve, tempDir } from "@tauri-apps/api/path"
-import { paths } from "./path"
 import { encode, decode } from "@msgpack/msgpack"
-import { transformBook } from "../passage-transformer"
-import { Book } from "../passage-types"
 
 function getUsfmUrl(translationId: string) {
   return `https://ebible.org/Scriptures/${translationId}_usfm.zip`

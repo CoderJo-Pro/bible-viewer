@@ -24,7 +24,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import hotkeys from "hotkeys-js"
 

@@ -14,11 +14,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue"
-import PassageRenderer from "../components/PassageRenderer.vue"
-import { parse } from "../utils/reference-parser"
-import { useTranslations } from "../composables/useTranslations"
-
 definePageMeta({
   keepalive: true,
 })
